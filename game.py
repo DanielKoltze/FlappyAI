@@ -1,5 +1,5 @@
 import pygame
-from settings import MAP_HEIGHT, MAP_WIDTH, FPS
+from settings import MAP_HEIGHT, MAP_WIDTH,FPS,PIPE_SPACEING
 from bird import Bird
 from pipe import Pipe
 from db import write_highscore, read_highscore
@@ -9,7 +9,7 @@ class Game:
         pygame.init()
         self.win = pygame.display.set_mode((MAP_WIDTH, MAP_HEIGHT))
         self.clock = pygame.time.Clock()
-        self.pipe = Pipe()
+        self.pipes = [Pipe()]
         if not ai_mode:
             self.bird = Bird(150, MAP_HEIGHT // 2)
         self.score = 0
@@ -35,24 +35,32 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 self.bird.jump()
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT: 
                 self.run = False
 
-        if self.pipe.can_move():
-            self.pipe.move()
-        else:
-            self.pipe = Pipe()
+        for pipe in self.pipes:
+            pipe.move()
+        
+        self.pipes = [pipe for pipe in self.pipes if not pipe.remove_of_out_of_map()]
+
+        if self.pipes[-1].x < MAP_WIDTH - PIPE_SPACEING:
+            self.pipes.append(Pipe())
 
         self.bird.move()
         self.score = self.update_time(self.score)
         write_highscore(self.score)
 
-        if self.bird.out_of_map() or self.pipe.collides_with_bird(self.bird):
+        if self.bird.out_of_map():
             self.run = False
+
+        for pipe in self.pipes:
+            if pipe.collides_with_bird(self.bird):
+                self.run = False
 
     def draw(self):
         self.win.fill((0, 0, 0))
-        self.pipe.draw(self.win)
+        for pipe in self.pipes:
+            pipe.draw(self.win)
         self.bird.draw(self.win)
         self.draw_text(self.score, (10, 10))
         self.draw_highscore(f"Highscore: {self.current_highscore}", (MAP_WIDTH - 10, 10))
@@ -64,11 +72,6 @@ class Game:
             self.draw()
 
         pygame.quit()
-        #while not self.run:
-        #    for event in pygame.event.get():
-        #        if event.type == pygame.QUIT:
-        #            pygame.quit()
-        #            return
 
 game = Game()
 game.run_game()

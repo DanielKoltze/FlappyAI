@@ -1,6 +1,6 @@
 import random
 import pygame
-from settings import MAP_HEIGHT, MAP_WIDTH, MAX_PIPE_HEIGHT, MIN_PIPE_HEIGHT, MAX_PIPE_WIDTH, MIN_PIPE_WIDTH, MIN_PIPE_GAP, MAX_PIPE_GAP
+from settings import MAP_HEIGHT, MAP_WIDTH, MAX_PIPE_HEIGHT, MIN_PIPE_HEIGHT, MAX_PIPE_WIDTH, MIN_PIPE_WIDTH, MIN_PIPE_GAP,MAX_PIPE_GAP,PIPE_MOVING_SPEED
 
 class Pipe:
     def __init__(self, height=0, width=0, gap=0):
@@ -15,9 +15,10 @@ class Pipe:
         self.gap = gap
         self.x = MAP_WIDTH
         self.y = 0
+        self.speed = PIPE_MOVING_SPEED
 
     def move(self):
-        self.x -= 10
+        self.x -= self.speed
 
     def draw(self, win):
         # bottom pipe
@@ -34,3 +35,8 @@ class Pipe:
         top_pipe_height = MAP_HEIGHT - self.height - self.gap
         top_pipe_rect = pygame.Rect(self.x, 0, self.width, top_pipe_height)
         return bird.rect.colliderect(bottom_pipe_rect) or bird.rect.colliderect(top_pipe_rect)
+    
+    def remove_of_out_of_map(self):
+        if self.x < 0 - self.width:
+            return True
+        return False
