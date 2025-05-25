@@ -37,7 +37,7 @@ def test_ai(config):
         winner = pickle.load(f)
 
     net = neat.nn.FeedForwardNetwork.create(winner, config)
-    game = Game()
+    game = Game(True)
     bird = game.bird
 
     while game.run:
@@ -89,7 +89,7 @@ def run_neat(config):
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(1))
 
-    winner = p.run(eval_genomes, 10)
+    winner = p.run(eval_genomes, 1)
     with open("best.pickle", "wb") as f:
         pickle.dump(winner, f)
 

@@ -10,8 +10,9 @@ class Game:
         self.win = pygame.display.set_mode((MAP_WIDTH, MAP_HEIGHT))
         self.clock = pygame.time.Clock()
         self.pipes = [Pipe()]
+        self.birds = []
         if not ai_mode:
-            self.bird = Bird(150, MAP_HEIGHT // 2)
+            self.birds.append(Bird(150, MAP_HEIGHT // 2))
         self.score = 0
         self.current_highscore = read_highscore()
         self.run = True
@@ -34,7 +35,8 @@ class Game:
         self.clock.tick(FPS)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                self.bird.jump()
+                for bird in self.birds:
+                    bird.jump()
             if event.type == pygame.QUIT: 
                 self.run = False
 
@@ -46,22 +48,25 @@ class Game:
         if self.pipes[-1].x < MAP_WIDTH - PIPE_SPACEING:
             self.pipes.append(Pipe())
 
-        self.bird.move()
+        for bird in self.birds:
+            bird.move()
         self.score = self.update_time(self.score)
         write_highscore(self.score)
-
-        if self.bird.out_of_map():
-            self.run = False
+        for bird in self.birds:
+            if bird.out_of_map():
+                self.run = False
 
         for pipe in self.pipes:
-            if pipe.collides_with_bird(self.bird):
-                self.run = False
+            for bird in self.birds:
+                if pipe.collides_with_bird(bird):
+                    self.run = False
 
     def draw(self):
         self.win.fill((0, 0, 0))
         for pipe in self.pipes:
             pipe.draw(self.win)
-        self.bird.draw(self.win)
+        for bird in self.birds:
+            bird.draw(self.win)
         self.draw_text(self.score, (10, 10))
         self.draw_highscore(f"Highscore: {self.current_highscore}", (MAP_WIDTH - 10, 10))
         pygame.display.update()
