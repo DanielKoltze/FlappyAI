@@ -52,14 +52,14 @@ class Game:
             bird.move()
         self.score = self.update_time(self.score)
         write_highscore(self.score)
-        for bird in self.birds:
-            if bird.out_of_map():
-                self.run = False
+       
+        self.birds = [bird for bird in self.birds if not bird.out_of_map()]
 
         for pipe in self.pipes:
-            for bird in self.birds:
-                if pipe.collides_with_bird(bird):
-                    self.run = False
+            self.birds = [bird for bird in self.birds if not pipe.collides_with_bird(bird)]
+
+        if len(self.birds) == 0:
+            self.run = False
 
     def draw(self):
         self.win.fill((0, 0, 0))
