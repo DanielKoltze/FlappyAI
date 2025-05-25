@@ -13,3 +13,4 @@ VELOCITY = -10
 DATABASE_PATH = 'database/data.json'
 PLANE_PATH = 'assets/plane2.png'
 PLANE_SIZE = 40
+PIPE_SPAWN_TIME = 1

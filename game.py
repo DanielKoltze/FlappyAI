@@ -5,12 +5,13 @@ from pipe import Pipe
 from db import write_highscore, read_highscore
 
 class Game:
-    def __init__(self):
+    def __init__(self,ai_mode = False):
         pygame.init()
         self.win = pygame.display.set_mode((MAP_WIDTH, MAP_HEIGHT))
         self.clock = pygame.time.Clock()
         self.pipe = Pipe()
-        self.bird = Bird(150, MAP_HEIGHT // 2)
+        if not ai_mode:
+            self.bird = Bird(150, MAP_HEIGHT // 2)
         self.score = 0
         self.current_highscore = read_highscore()
         self.run = True
