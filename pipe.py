@@ -36,7 +36,7 @@ class Pipe:
         top_pipe_rect = pygame.Rect(self.x, 0, self.width, top_pipe_height)
         return bird.rect.colliderect(bottom_pipe_rect) or bird.rect.colliderect(top_pipe_rect)
     
-    def remove_of_out_of_map(self):
+    def out_of_map(self):
         if self.x < 0 - self.width:
             return True
         return False

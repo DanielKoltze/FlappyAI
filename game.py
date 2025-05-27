@@ -43,7 +43,7 @@ class Game:
         for pipe in self.pipes:
             pipe.move()
         
-        self.pipes = [pipe for pipe in self.pipes if not pipe.remove_of_out_of_map()]
+        self.pipes = [pipe for pipe in self.pipes if not pipe.out_of_map()]
 
         if self.pipes[-1].x < MAP_WIDTH - PIPE_SPACEING:
             self.pipes.append(Pipe())
@@ -55,8 +55,8 @@ class Game:
        
         self.birds = [bird for bird in self.birds if not bird.out_of_map()]
 
-        for pipe in self.pipes:
-            self.birds = [bird for bird in self.birds if not pipe.collides_with_bird(bird)]
+        oldest_pipe = self.pipes[0]
+        self.birds = [bird for bird in self.birds if not oldest_pipe.collides_with_bird(bird)]
 
         if len(self.birds) == 0:
             self.run = False
@@ -78,5 +78,5 @@ class Game:
 
         pygame.quit()
 
-game = Game()
-game.run_game()
+#game = Game()
+#game.run_game()
